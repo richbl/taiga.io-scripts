@@ -37,3 +37,4 @@ Beyond the obvious need to be running the Bash shell, there are a few additional
 Yes, these scripts are written in [Bash](https://www.gnu.org/software/bash/ "Bash"). They've only ever been run and tested in Bash (under Ubuntu 14.04 LTS). Some day, it'd be a fine exercise to refactor these into something a bit more platform-agnostic like Python or Go. Until then, know that these scripts are bash scripts.
 
 ## License
+This software is released under the GNU GENERAL PUBLIC LICENSE, Version 3. For details, see the license file in this project ([`license.md`](https://github.com/richbl/taiga-scripts/blob/master/LICENSE "License")).
