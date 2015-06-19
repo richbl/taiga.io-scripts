@@ -1,17 +1,15 @@
 ##Some Taiga Scripts
 These are a set of bash scripts used to manage an Agile project management platform currently under development called [Taiga](http://taiga.io "Taiga project management platform"). 
-Though in beta, this web-based platform is quite stable, and the RESTful API is quite nice and well-matured.
+Though in beta, this web-based platform is stable and the RESTful API is thorough and responsive.
+
 These scripts are loosely organized into two categories:
 - Taiga importers
 - Taiga exporters
 
-These categories should be pretty clear in their function.
+> **Note:** Both sets of scripts currently assume the existence of a Taiga project. If you don't yet have a project created, these scripts will be useless to you.
 
-> **Note:** Both categories of scripts currently assume the existence of a Taiga project. If you don't yet have a project created, these scripts will be useless to you.
-
-###What They Do
-####Taiga Importers
-#####taiga_import_story.sh
+###Taiga Importers
+####taiga_import_story.sh
 There's currently one import script available. Called `taiga_import_story.sh`, it does what it sounds like it does: imports a story into a Taiga project. Actually, this script does a bulk import of many stories from a tab-delimited file provided as input to the script.
 
 As implemented, this initial version of the script creates a story, populating the following fields:
@@ -20,11 +18,11 @@ As implemented, this initial version of the script creates a story, populating t
 * description
 * tags (up to three)
 
-####Taiga Exporters
-There are two export scripts available, however, one is really a script used for backup that calls into the other.
-#####taiga_export_project.sh
+###Taiga Exporters
+There are two export scripts available, however one is really a script used for backup that calls into the other.
+####taiga_export_project.sh
 `taiga_export_project.sh` takes a number of command-line parameters, mostly identifying the Taiga project from which to export, and exports the JSON file to a date-and-time-stamped file. 
-#####run_taiga_export_project.sh
+####run_taiga_export_project.sh
 `run_taiga_export_project.sh` is really just a front-end script that calls into `taiga_export_projecct.sh` with defined sets of parameters. This script is used to help automate a regular Taiga project backup strategy through the use of Unix-like tools such as *crontab*.
 
 ###Requirements
