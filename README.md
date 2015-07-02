@@ -1,5 +1,5 @@
 ##Some Taiga Scripts
-These are a set of bash scripts used to manage an Agile project management platform currently under development called [Taiga](http://taiga.io "Taiga project management platform"). 
+These is a set of bash scripts used to manage an Agile project management platform currently under development called [Taiga](http://taiga.io "Taiga project management platform"). 
 Though in beta, this web-based platform is stable and the RESTful API is thorough and responsive.
 
 These scripts are loosely organized into two categories:
