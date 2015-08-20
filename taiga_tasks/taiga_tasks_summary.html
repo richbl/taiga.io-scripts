@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <title>Task Activities Report</title>
+
+   <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+   <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+   <script type="text/javascript" src="http://code.highcharts.com/modules/data.js"></script>
+
+   <script type="text/javascript">
+      $(function() {
+
+         $(document).ready(function() {
+
+            $.getJSON("http://localhost:8000/richbl-admin-sorce-migration-activities-export.json", function(data) {
+
+               var arrayLength = data.length;
+
+               var categories = [];
+               var estimatedPoints = [];
+               var actualPoints = [];
+               var diffPoints = [];
+               var cumDiffPoints = [];
+               var cumPoints = [];
+
+               var userName = data[0]['full_name'];
+               var projectName = data[0]['project_name'];
+
+               data.sort(function( obj1, obj2 ) {
+                 var MAX_TIMESTAMP = 8640000000000000;
+
+                 // if finish_date is null, task is still in works, so assign it max value timestamp
+                 // so task ends up last (right-most) in list
+                 //
+                 !obj1.finish_date ? a_date = new Date(MAX_TIMESTAMP) : a_date = new Date(obj1.finish_date);
+                 !obj2.finish_date ? b_date = new Date(MAX_TIMESTAMP) : b_date = new Date(obj2.finish_date);
+                 return b_date < a_date ? 1 : -1;
+               });
+
+               for (var i = 0; i < arrayLength; i++) {
+
+                 if (!data[i]['finish_date']) {
+                   categories[i] = data[i]['subject'] + "<br>[In Progress]";
+                 }
+                 else{
+                   categories[i] = data[i]['subject'] + "<br>[Done]";
+                 };
+
+                  estimatedPoints[i] = data[i]['estimated_points'];
+                  actualPoints[i] = data[i]['actual_points'];
+
+                  diffPoints[i] = actualPoints[i] - estimatedPoints[i];
+
+                  cumDiffPoints[i] = diffPoints[i];
+                  cumPoints[i] = actualPoints[i];
+
+                  if (i > 0) {
+                     cumDiffPoints[i] = cumDiffPoints[i - 1] + diffPoints[i];
+                     cumPoints[i] = cumPoints[i - 1] + actualPoints[i];
+                  }
+
+               };
+
+               chart = new Highcharts.Chart({
+                  chart: {
+                     renderTo: 'container',
+                     type: 'line'
+                  },
+                  title: {
+                     text: userName + ': Task Activity Report'
+                  },
+
+                  subtitle: {
+                     text: 'Project: ' + data[0]['project_name']
+                  },
+
+                  xAxis: {
+                     gridLineWidth: 1,
+                     crosshair: true,
+                     categories: categories
+                  },
+                  yAxis: {
+                     gridLineWidth: 1,
+                     title: {
+                        text: 'Hours (h)',
+                     }
+                  },
+
+                  plotOptions: {
+                     line: {
+                        dataLabels: {
+                           enabled: true
+                        },
+                     },
+
+                  },
+
+                  series: [{
+                     name: 'Estimated (h)',
+                     data: estimatedPoints
+
+                  }, {
+                     name: 'Actual (h)',
+                     data: actualPoints
+
+                  }, {
+                     name: 'Diff (h)',
+                     data: diffPoints
+
+                  }, {
+                     name: 'Cum. Diff (h)',
+                     data: cumDiffPoints
+
+                  }, {
+                     name: "Total (h)",
+                     data: cumPoints
+                  }]
+
+               });
+            });
+         });
+      });
+   </script>
+</head>
+
+<body>
+   <div id="container" style="width: 90%; height: 100%; margin: 0 auto"></div>
+   <br>
+   <div id="container1" style="width: 90%; height: 100%; margin: 0 auto"></div>
+   <br>
+   <div id="container2" style="width: 90%; height: 100%; margin: 0 auto"></div>
+</body>
+
+</html>
