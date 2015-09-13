@@ -1,56 +1,76 @@
 ##Some Taiga Scripts
-These is a set of bash scripts used to manage an Agile project management platform currently under development called [Taiga](http://taiga.io "Taiga project management platform"). 
+These scripts manage an Agile project management platform currently under development called [Taiga](http://taiga.io "Taiga project management platform"). 
 Though in beta, this web-based platform is extremely stable and the RESTful API is thorough and responsive.
 
-These scripts are loosely organized into two categories:
+These scripts are loosely organized into three categories:
 
-Taiga importers
+Taiga importers (bash script):
 
  - taiga_import_story.sh
  
-Taiga exporters 
+Taiga exporters (bash scripts):
 
 - taiga_export_project.sh
 - run_taiga_export_project.sh
-- postgres_db_dump.sh
-- run_postgres_db_dump.sh
 
-> **Note:** With the exception of exporters `postgres_db_dump.sh` and `run_postgres_db_dump.sh`, these scripts assume the existence of a Taiga project. If you don't yet have a project created, these scripts will be useless to you.
+Taiga task activities reporting (bash scripts or HTML/JavaScript):
+
+- taiga_tasks.html
+
+
+> **Note:** These scripts assume the existence of a Taiga project. If you don't yet have a project created, these scripts are pretty useless to you.
 
 ###Taiga Importers
 ####taiga_import_story.sh
-There's currently one import script available. Called `taiga_import_story.sh`, it does what it sounds like it does: imports a story into a Taiga project. Actually, this script does a bulk import of many stories from a tab-delimited file provided as input to the script.
+There's currently one import script available. Called `taiga_import_story.sh`, it does what it sounds like: imports a story into a Taiga project. Actually, the real value of this script is that it can perform a bulk import of many stories from a tab-delimited file provided as input to the script.
 
 As implemented, this initial version of the script creates a story, populating the following fields:
-* project ID (required)
-* subject (required)
-* description
-* tags (up to three)
+
+- project ID (required)
+- subject (required)
+- description
+- tags (up to three)
 
 ###Taiga Exporters
-There are four export scripts available, however two are really scripts used as front-ends (`run_...`) that call into the other backend scripts.
+There are four export scripts available, however two are really scripts used as front-ends (scripts prepended with `run_`) that call into their respective back-end scripts.
 ####taiga_export_project.sh
-`taiga_export_project.sh` takes a number of command-line parameters, mostly identifying the Taiga project from which to export, and exports the JSON file to a date-and-time-stamped file (useful for a running backup archive).
+`taiga_export_project.sh` takes a number of command-line parameters, mostly identifying the Taiga project from which to export, and exports the JSON file to a date-and-time-stamped file (particularly useful for a running backup archive).
 ####run_taiga_export_project.sh
-`run_taiga_export_project.sh` is really just a front-end script that calls into `taiga_export_projecct.sh` with defined sets of parameters. This script is used to help automate a regular Taiga project backup strategy through the use of Unix-like tools such as *crontab*.
-####postgres_dump_db.sh
+`run_taiga_export_project.sh` is the front-end script that calls into `taiga_export_project.sh` with a predefined set of parameters. This script is used to help automate a regular Taiga project backup strategy through the use of Unix-like tools such as *crontab*.
 
->>> MOVED TO SEPARATE REPOSITORY (https://github.com/richbl/postgresql-db-dump) <<<<
+###Taiga Task Activity Reporting
+These scripts are used to query into an existing Taiga project, parse user stories by user, perform some calculations against these user stories, and ultimately display the results graphically using [Highcharts](http://www.highcharts.com/ "Highcharts").
 
-`postgres_dump_db.sh` was written intially to permit for the remote dump of a PostgreSQL database. It takes a number of command-line parameters, and if run successfully, returns a date-and-time-stamped file (useful for a running backup archive). This script expects that the host is properly configured to accept remote logins, and that the Postgres user (technically called a role in Postgres) is apppropriately associated with the database in question.
-####run_postgres_dump_db.sh
-`run_taiga_export_project.sh` is really just a front-end script that calls into `taiga_export_projecct.sh` with defined sets of parameters. This script is used to help automate a regular Taiga project backup strategy through the use of Unix-like tools such as *crontab*.
+These scripts are written in both bash and JavaScript, and are intended to be run either locally or from a remote server. The organization of the repository should provide some understanding of which scripts are which:
+
+- bash folder containing:
+	- `taiga_tasks.sh`
+	- `run_taiga_tasks.sh`
+- local folder containing:
+	- `taiga_tasks.html`
+- remote folder containing:
+	- `taiga_tasks.html`
+	- `favicon.ico`
+	- img folder containing:
+		- `logo.png`
+	- js folder containing:
+		- `taiga_tasks_dlg.js`
+		- `taiga_tasks_api.js`
+
+The scripts contained in the bash and the local folders are useful for running these applications from a local machine, while the scripts in the remote folder are intended to be installed and run from a remote web-server.
+
 ###Requirements
+####Bash Scripts
 Beyond the obvious need to be running the Bash shell, there are a few additional requirements needed to run these scripts (these requirements are also documented in the scripts themselves):
-* A preexisting Taiga project (for those scripts using Taiga, of course)
-* Curl (http://curl.haxx.se/) must be installed on host machine
-* JQ (https://stedolan.github.io/jq/) must be installed on host machine
-* pg_dump (http://www.postgresql.org/), part of a PostgreSQL package install, if you want to dump a PostgreSQL database.
 
-> **Note:** While not so much a script requirements, their actions require administrative privileges as a Taiga user on the project(s) of interest.
+- A preexisting Taiga project (for those scripts using Taiga, of course)
+- Curl (http://curl.haxx.se/) must be installed on host machine
+- JQ (https://stedolan.github.io/jq/) must be installed on host machine
 
-###About Bash
-Yes, these scripts are written in [Bash](https://www.gnu.org/software/bash/ "Bash"). They've only ever been run and tested in Bash (under Ubuntu 14.04 LTS). Some day, it'd be a fine exercise to refactor these into something a bit more platform-agnostic like Python or Go. Until then, know that these scripts are bash scripts.
+####JavaScript Scripts
+The JavaScript version of the taiga_tasks solution expects JavaScript to be running in the browser. All other requirements are managed remotely through a set of external JavaScript libraries.
+
+> **Note:** While not so much a script requirements, these scripts sometimes require the administrative privileges of a Taiga user on the project(s) of interest.
 
 ## License
 This software is released under the GNU GENERAL PUBLIC LICENSE, Version 3. For details, see the license file in this project ([`license.md`](https://github.com/richbl/taiga-scripts/blob/master/LICENSE "License")).
