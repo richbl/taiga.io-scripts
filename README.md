@@ -41,6 +41,10 @@ There are four export scripts available, however two are really scripts used as 
 ###Taiga Task Activity Reporting
 These scripts are used to query into an existing Taiga project, parse user stories by user, perform some calculations against these user stories, and ultimately display the results graphically using [Highcharts](http://www.highcharts.com/ "Highcharts").
 
+![Taiga Tasks Dialog](https://raw.githubusercontent.com/richbl/taiga.io-scripts/master/taiga_tasks_dialog.png "Taiga Tasks Dialog")
+
+![Taiga Activity Report](https://raw.githubusercontent.com/richbl/taiga.io-scripts/master/taiga_tasks_activity_report.png "Taiga Activity Report")
+
 These scripts are written in both bash and JavaScript, and are intended to be run either locally or from a remote server. The organization of the repository should provide some understanding of which scripts are which:
 
 - bash folder containing:
