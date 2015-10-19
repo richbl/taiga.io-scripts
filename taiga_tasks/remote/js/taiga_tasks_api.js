@@ -18,23 +18,24 @@
  * ----------------------------------------------------------------------------------
  * Get taiga AUTH_TOKEN used in all subsequent taiga API calls
  */
-function getAuthToken(website, project, adminUsername, adminPassword, users) {
+function getAuthToken(taigaParams) {
 
    $.ajax({
       method: "POST",
-      url: website + '/api/v1/auth',
+      url: taigaParams.website + '/api/v1/auth',
       data: {
          "type": "normal",
-         "username": adminUsername,
-         "password": adminPassword
+         "username": taigaParams.adminUsername,
+         "password": taigaParams.adminPassword
       },
       success: function(json) {
-         showSuccessAlert("Taiga authentication succeeded for user " + adminUsername + ".");
-         getProjectID(website, project, json.auth_token, users);
+         showSuccessAlert("Taiga authentication succeeded for user " + taigaParams.adminUsername + ".");
+         taigaParams.authToken = json.auth_token;
+         getProjectID(taigaParams);
       },
       error: function(jqXHR, textStatus, errorThrown) {
          console.log(textStatus, errorThrown);
-         showErrorAlert("Taiga authentication failed for user " + adminUsername + " because of incorrect username or password.");
+         showErrorAlert("Taiga authentication failed for user " + taigaParams.adminUsername + " because of incorrect username or password.");
       }
    });
 };
@@ -43,16 +44,17 @@ function getAuthToken(website, project, adminUsername, adminPassword, users) {
  * ----------------------------------------------------------------------------------
  * Get taiga project ID
  */
-function getProjectID(website, project, authToken, users) {
+function getProjectID(taigaParams) {
    $.ajax({
       method: "GET",
-      url: website + '/api/v1/resolver?project=' + project,
+      url: taigaParams.website + '/api/v1/resolver?project=' + taigaParams.project,
       beforeSend: function(xhr) {
-         xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+         xhr.setRequestHeader('Authorization', 'Bearer ' + taigaParams.authToken);
       },
       success: function(json) {
          showSuccessAlert("ProjectID retrieval succeeded.");
-         getProjectName(website, authToken, json.project, users);
+         taigaParams.projectID = json.project;
+         getProjectName(taigaParams);
       },
       error: function(jqXHR, textStatus, errorThrown) {
          console.log(textStatus, errorThrown);
@@ -65,16 +67,17 @@ function getProjectID(website, project, authToken, users) {
  * ----------------------------------------------------------------------------------
  * Get taiga project name
  */
-function getProjectName(website, authToken, projectID, users) {
+function getProjectName(taigaParams) {
    $.ajax({
       method: "GET",
-      url: website + '/api/v1/projects/' + projectID,
+      url: taigaParams.website + '/api/v1/projects/' + taigaParams.projectID,
       beforeSend: function(xhr) {
-         xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+         xhr.setRequestHeader('Authorization', 'Bearer ' + taigaParams.authToken);
       },
       success: function(json) {
          showSuccessAlert("Project name retrieval succeeded.");
-         processUsers(website, authToken, projectID, json.name, users);
+         taigaParams.projectName = json.name;
+         processUsers(taigaParams);
       },
       error: function(jqXHR, textStatus, errorThrown) {
          console.log(textStatus, errorThrown);
@@ -87,11 +90,19 @@ function getProjectName(website, authToken, projectID, users) {
  * ----------------------------------------------------------------------------------
  * Get taiga user(s)
  */
-function processUsers(website, authToken, projectID, projectName, users) {
+function processUsers(taigaParams) {
 
-   users.forEach(function(element, i) {
-      $('#container').append('<div id=chart' + [i] + '></div><br><br>');
-      getUserID(website, authToken, projectID, projectName, element, i);
+   (taigaParams.users).forEach(function(userName, index) {
+
+      // clear all system alerts, as subsequent alerts will be user-specific
+      //
+      clearAlerts();
+
+      getUserID(taigaParams, {
+         userName: userName, // user name
+         index: index + 1, // index of user used for displaying into HTML divs
+         userID: 0 // user ID
+      });
    });
 
 }
@@ -100,24 +111,26 @@ function processUsers(website, authToken, projectID, projectName, users) {
  * ----------------------------------------------------------------------------------
  * Get username id
  */
-function getUserID(website, authToken, projectID, projectName, username, divIndex) {
+function getUserID(taigaParams, userParams) {
    $.ajax({
       method: "GET",
-      url: website + '/api/v1/users?project=' + projectID,
+      url: taigaParams.website + '/api/v1/users?project=' + taigaParams.projectID,
       beforeSend: function(xhr) {
-         xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+         xhr.setRequestHeader('Authorization', 'Bearer ' + taigaParams.authToken);
       },
       success: function(json) {
-         showSuccessAlert("User ID retrieval for " + username + " succeeded.");
+         showSuccessAlert("User ID retrieval for " + userParams.userName + " succeeded.", userParams.index);
 
          var result = $.grep(json, function(element, index) {
-            return element.username == username;
+            return element.username == userParams.userName;
          });
-         getUserStories(website, authToken, projectID, projectName, result[0].id, divIndex, getResults);
+
+         userParams.userID = result[0].id;
+         getUserStories(taigaParams, userParams, getResults);
       },
       error: function(jqXHR, textStatus, errorThrown) {
          console.log(textStatus, errorThrown);
-         showErrorAlert("Unable to retrieve user ID for " + username + ".");
+         showErrorAlert("Unable to retrieve user ID for " + userParams.userName + ".");
       }
    });
 };
@@ -126,52 +139,69 @@ function getUserID(website, authToken, projectID, projectName, username, divInde
  * ----------------------------------------------------------------------------------
  * Get user stories
  */
-function getUserStories(website, authToken, projectID, projectName, userID, divIndex, callback) {
+function getUserStories(taigaParams, userParams, callback) {
+
+   // include/exclude incomplete (in progress) tasks in userstories query
+   //
+   var closedTasks = "";
+   if (!taigaParams.showIncompleteTasks) {
+      closedTasks = '\&is_closed=true';
+   };
+
    $.ajax({
       method: "GET",
-      url: website + '/api/v1/userstories?project=' + projectID + '\&assigned_to=' + userID,
+      url: taigaParams.website + '/api/v1/userstories?project=' + taigaParams.projectID + '\&assigned_to=' + userParams.userID + closedTasks,
       beforeSend: function(xhr) {
-         xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+         xhr.setRequestHeader('Authorization', 'Bearer ' + taigaParams.authToken);
       },
       success: function(json) {
          var newItem = [];
          var callbackCount = json.length;
 
-         showSuccessAlert("User stories retrieval succeeded.");
+         showSuccessAlert("User stories retrieval succeeded.", userParams.index);
 
          // build newItem array from JSON returns
          //
          var json = $.map(json, function(item) {
 
-            // get custom fields (actual_points) and include in final JSON return
-            //   if no attributes_values, then set to null (user didn't set a value)
+            // check if story date is within requested date range
             //
-            getCustomFields(website, authToken, projectID, item.id).done(function(data) {
-
-               var actualPoints = data.attributes_values[1];
-
-               if (actualPoints === undefined) {
-                  actualPoints = null;
-               }
-
-               newItem.push({
-                  estimated_points: item.total_points,
-                  subject: item.subject,
-                  story_id: item.id,
-                  full_name: item.assigned_to_extra_info.full_name_display,
-                  finish_date: item.finish_date,
-                  actual_points: actualPoints,
-                  project_name: projectName
-               });
-
-               // manage callback counts, given we don't know when all callbacks
-               // have completed... when all callbacks return, continue
-               //
+            if ((item.modified_date < taigaParams.startDate) || (item.modified_date > taigaParams.endDate)) {
                if (!--callbackCount) {
-                  callback(newItem, divIndex);
-               };
+                  showInfoAlert("No user stories found matching date criteria for user " + userParams.userName + ".", userParams.index);
+               }
+            } else {
 
-            });
+               // get custom fields (actual_points) and include in final JSON return
+               // if no attributes_values, then set to null (user didn't set a value)
+               //
+               getCustomFields(taigaParams, userParams, item.id).done(function(data) {
+
+                  var actualPoints = data.attributes_values[1];
+
+                  if (actualPoints === undefined) {
+                     actualPoints = null;
+                  }
+
+                  newItem.push({
+                     estimated_points: item.total_points,
+                     subject: item.subject,
+                     story_id: item.id,
+                     full_name: item.assigned_to_extra_info.full_name_display,
+                     finish_date: item.finish_date,
+                     actual_points: actualPoints,
+                     project_name: taigaParams.projectName
+                  });
+
+                  // manage callback counts, given we don't know when all callbacks
+                  // have completed... when all callbacks return, continue
+                  //
+                  if (!--callbackCount) {
+                     callback(taigaParams, userParams, newItem);
+                  };
+
+               });
+            };
          });
       },
       error: function(jqXHR, textStatus, errorThrown) {
@@ -185,15 +215,15 @@ function getUserStories(website, authToken, projectID, projectName, userID, divI
  * ----------------------------------------------------------------------------------
  * Get user story custom fields (e.g,. actual_points field)
  */
-function getCustomFields(website, authToken, projectID, storyID) {
+function getCustomFields(taigaParams, userParams, storyID) {
    return $.ajax({
       method: "GET",
-      url: website + '/api/v1/userstories/custom-attributes-values/' + storyID + '?project=' + projectID,
+      url: taigaParams.website + '/api/v1/userstories/custom-attributes-values/' + storyID + '?project=' + taigaParams.projectID,
       beforeSend: function(xhr) {
-         xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+         xhr.setRequestHeader('Authorization', 'Bearer ' + taigaParams.authToken);
       },
       success: function() {
-         showSuccessAlert("Custom fields retrieval succeeded.");
+         showSuccessAlert("Custom fields retrieval succeeded.", userParams.index);
       },
       error: function(jqXHR, textStatus, errorThrown) {
          console.log(textStatus, errorThrown);
@@ -311,7 +341,7 @@ function getDateTime() {
  * ----------------------------------------------------------------------------------
  * Get and process the resultng JSON file for highcharts (hc)
  */
-function getResults(json, divIndex) {
+function getResults(taigaParams, userParams, json) {
 
    var results = processResults(json);
    hcCategories = createResultsCategories(results);
@@ -322,23 +352,24 @@ function getResults(json, divIndex) {
    // $('#debug').append('<br>=========Categories==========<br>' + JSON.stringify(hcCategories, null, 4));
    // $('#debug').append('<br>=========Series==============<br>' + JSON.stringify(hcSeries));
 
-   plotChart(results, hcCategories, hcSeries, hcDate, divIndex);
+   plotChart(taigaParams, userParams, hcCategories, hcSeries, hcDate, results);
 };
 
 /**
  * ----------------------------------------------------------------------------------
  * Plot data to highcharts object
  */
-function plotChart(data, categories, series, date, count) {
+function plotChart(taigaParams, userParams, categories, series, date, data) {
 
-   $('#chart' + [count]).highcharts({
+   $('#container').append('<div id=chart' + [userParams.index] + '></div><br><br>');
+   $('#chart' + [userParams.index]).highcharts({
 
       title: {
-         text: data[0]['full_name'] + ' : Task Activity Report'
+         text: data[0]['project_name'] + ' Project' + '<br>' + 'Task Activity Report for ' + data[0]['full_name']
       },
 
       subtitle: {
-         text: data[0]['project_name'] + ' Project<br>' + 'Generated on ' + date
+         text: 'Activity Date Range: ' + (new Date(taigaParams.startDate)).toJSON().slice(0, 10) + ' to ' + (new Date(taigaParams.endDate)).toJSON().slice(0, 10) + '<br>' + 'Report Generated on ' + date
       },
 
       xAxis: {
@@ -364,8 +395,7 @@ function plotChart(data, categories, series, date, count) {
       series: series
    });
 
-   clearAlerts(count);
-
+   clearAlerts(userParams.index);
 };
 
 /**
@@ -373,20 +403,28 @@ function plotChart(data, categories, series, date, count) {
  * Display alerts to browser window
  */
 
-function showSuccessAlert(msg) {
-   ShowAlert(msg, 0);
+function showSuccessAlert(msg, index) {
+   ShowAlert(msg, index, 0);
 };
 
-function showErrorAlert(msg) {
-   ShowAlert(msg, 1);
+function showErrorAlert(msg, index) {
+   ShowAlert(msg, index, 1);
 };
 
-function ShowAlert(msg, type) {
+function showInfoAlert(msg, index) {
+   ShowAlert(msg, index, 2);
+};
 
-   msgType = {
+function ShowAlert(msg, index, type) {
+
+   var msgType = {
       class: "",
       text: ""
    };
+
+   if (typeof index == "undefined") {
+      index = 0;
+   }
 
    switch (type) {
       case 0:
@@ -397,23 +435,34 @@ function ShowAlert(msg, type) {
          msgType.class = "alert-danger";
          msgType.text = "Error";
          break;
+      case 2:
+         msgType.class = "alert-warning";
+         msgType.text = "Warning";
+         break;
       default:
          msgType.class = "alert-info";
-         msgType.text = "Info";
+         msgType.text = "Information";
    };
 
-   $('#alerts').html("<div id='alert' class='alert " + msgType.class + " fade in' style='margin:20px'><strong>" + msgType.text + ":</strong> " + msg + "</div></div>");
+   var element = "<div id='alert" + index + "' class='alert " + msgType.class + " fade in' style='margin:20px'><strong>" + msgType.text + ":</strong> " + msg + "</div></div>";
+
+   if ($("#alert" + index).length) {
+      $("#alert" + index).replaceWith(element);
+   } else {
+      $('#alerts').append(element);
+   }
 
 };
 
 /**
  * ----------------------------------------------------------------------------------
- * Remove alerts after final chart is rendered
+ * Remove alerts after final chart(s) is rendered
  */
-function clearAlerts(count) {
+function clearAlerts(index) {
 
-   if ($("div[id^='chart']").length - 1 == count) {
-      $('#alert').remove();
-   };
+   if (typeof index == "undefined") {
+      index = 0;
+   }
 
+   $('#alert' + index).remove();
 };
