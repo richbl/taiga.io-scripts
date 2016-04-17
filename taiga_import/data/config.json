@@ -1,0 +1,46 @@
+{
+  "details":
+    {
+      "title": "A bash script to POST user stories into a Taiga project",
+      "syntax": "import_taiga -w website -n project_slug_name -i input_file -u username -p password",
+      "version": "0.2.0"
+    },
+  "arguments":
+    [
+      {
+        "short_form": "-w",
+        "long_form": "--website",
+        "text_string": "website",
+        "description": "website IP or URL (e.g., http://www.website.com)",
+        "required": true
+      },
+      {
+        "short_form": "-n",
+        "long_form": "--project_slug_name",
+        "text_string": "project slug name",
+        "description": "project slug name (not the project name)",
+        "required": true
+      },
+      {
+        "short_form": "-i",
+        "long_form": "--input_file",
+        "text_string": "input file",
+        "description": "tab-delimited input file",
+        "required": true
+      },
+      {
+        "short_form": "-u",
+        "long_form": "--username",
+        "text_string": "username",
+        "description": "username",
+        "required": true
+      },
+      {
+        "short_form": "-p",
+        "long_form": "--password",
+        "text_string": "password",
+        "description": "password",
+        "required": true
+      }
+    ]
+}
