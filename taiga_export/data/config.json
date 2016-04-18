@@ -1,0 +1,46 @@
+{
+  "details":
+    {
+      "title": "A bash script to GET a JSON export file from a Taiga project",
+      "syntax": "taiga_export_project.sh -w website -n project_slug_name -o output_dir -u username -p password",
+      "version": "0.2.0"
+    },
+  "arguments":
+    [
+      {
+        "short_form": "-w",
+        "long_form": "--website",
+        "text_string": "website",
+        "description": "website IP or URL (e.g., http://www.website.com)",
+        "required": true
+      },
+      {
+        "short_form": "-n",
+        "long_form": "--project_slug_name",
+        "text_string": "project slug name",
+        "description": "project slug name (not the project name)",
+        "required": true
+      },
+      {
+        "short_form": "-o",
+        "long_form": "--output_dir",
+        "text_string": "output directory",
+        "description": "output directory for JSON export",
+        "required": true
+      },
+      {
+        "short_form": "-u",
+        "long_form": "--username",
+        "text_string": "username",
+        "description": "username",
+        "required": true
+      },
+      {
+        "short_form": "-p",
+        "long_form": "--password",
+        "text_string": "password",
+        "description": "password",
+        "required": true
+      }
+    ]
+}
