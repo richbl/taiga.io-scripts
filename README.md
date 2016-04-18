@@ -99,6 +99,7 @@ Here's a successful export of a Taiga project that uses a project slug named cal
 	
 	Success: JSON export completed. Results file (a-test_project_import-export-20160416211616.json) created in /home/user/Desktop.
 
+>**NOTE**: The Taiga REST API only permits the export of a Taiga project using JSON if the Taiga server is configured to return a HTTP status code of 200. If the server returns 202, a valid export file is not available, and `taiga_export_project.sh` will quit indicating the reason for failure. For technical details, see the [Taiga REST API as it relates to project export](https://taigaio.github.io/taiga-doc/dist/api.html#export-import-export-dump). 
 
 ##Taiga Task Activity Reporting
 These scripts are used to query into an existing Taiga project, parse user stories by user, perform some calculations against these user stories, and ultimately display the results graphically using [Highcharts](http://www.highcharts.com/ "Highcharts").
