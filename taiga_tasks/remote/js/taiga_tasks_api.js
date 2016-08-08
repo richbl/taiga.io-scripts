@@ -177,7 +177,7 @@ function getUserStories(taigaParams, userParams, callback) {
                //
                getCustomFields(taigaParams, userParams, item.id).done(function(data) {
 
-                  var actualPoints = data.attributes_values[1];
+                  var actualPoints = data.attributes_values[2];
 
                   if (actualPoints === undefined) {
                      actualPoints = null;
