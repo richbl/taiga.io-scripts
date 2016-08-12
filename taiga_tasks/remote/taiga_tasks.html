@@ -18,155 +18,172 @@
 
 <html ng-app="taiga.tasks">
 
-   <head>
-      <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.min.js"></script>
-      <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.3.min.js"></script>
-      <script src="http://code.highcharts.com/highcharts.js"></script>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.min.js"></script>
+    <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.3.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
 
-      <script src="js/taiga_tasks_api.js"></script>
-      <script src="js/taiga_tasks_dlg.js"></script>
+    <script src="js/taiga_tasks_api.js"></script>
+    <script src="js/taiga_tasks_dlg.js"></script>
 
-      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-      <link rel="shortcut icon" href="favicon.ico" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico" />
 
-      <style type="text/css">
-         .nav,
-         .pagination,
-         .carousel,
-         .panel-title a {
-            cursor: pointer;
-         }
+    <style type="text/css">
+      .nav,
+      .pagination,
+      .carousel,
+      .panel-title a {
+        cursor: pointer;
+      }
 
-         @media screen and (min-width: 768px) {
-            .modal {
-               text-align: center;
-            }
-            .modal:before {
-               display: inline-block;
-               vertical-align: middle;
-               content: " ";
-               height: 100%;
-            }
-            .modal-dialog {
-               display: inline-block;
-               text-align: left;
-               vertical-align: middle;
-            }
-         }
-      </style>
+      @media screen and (min-width: 768px) {
+        .modal {
+          text-align: center;
+        }
+        .modal:before {
+          display: inline-block;
+          vertical-align: middle;
+          content: " ";
+          height: 100%;
+        }
+        .modal-dialog {
+          display: inline-block;
+          text-align: left;
+          vertical-align: middle;
+        }
+      }
+    </style>
 
-   </head>
+  </head>
 
-   <body>
-      <div ng-controller="ModalDemoCtrl" data-keyboard="false" data-backdrop="static">
-         <script type="text/ng-template" id="taiga_tasks.html">
+  <body>
+    <div ng-controller="ModalCtrl" data-keyboard="false" data-backdrop="static">
+      <script type="text/ng-template" id="taiga_tasks.html">
 
-            <div class="modal-content">
-               <div class="modal-header">
+        <div class="modal-content">
+          <div class="modal-header">
 
-                  <h4 class="modal-title">
+            <h4 class="modal-title">
                      <img id="imageresource" src="img/logo.png" style="margin-right: 10px;">
                      <b>Taiga Task Activity Reports</b>
                   </h4>
 
-                  <br>
-                  <span><i>Enter your Taiga username and password, then select the members and date range to generate activity reports.</i></span>
+            <br>
+            <span><i>Enter your Taiga project name, username and password, and then select the members and date range to generate activity reports.</i></span>
 
-               </div>
+          </div>
 
-               <div class="modal-body">
+          <div class="modal-body">
 
-                  <div class="row">
-                     <div class="form-group">
+            <div class="row">
 
-                        <div class="col-xs-6">
-                           <label>Username:</label>
-                           <input ng-model="dlgModel.username" class="form-control" type="text" autofocus />
-                        </div>
+              <div class="form-group">
 
-                        <div class="col-xs-6">
-                           <label>Password:</label>
-                           <input ng-model="dlgModel.password" class="form-control" type="password" />
-                        </div>
-                     </div>
+                <div class="col-xs-6">
+                  <label>Project name:</label>
+                  <input ng-model="dlgModel.projectname" class="form-control" type="text" autofocus />
+                </div>
 
-                  </div>
-                  <br>
+              </div>
 
-                  <div>
-                     <label>Project Members:</label>
-                     <br>
-
-                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" ng-model="checkModel.duane" btn-checkbox>Duane</button>
-                        <button type="button" class="btn btn-primary" ng-model="checkModel.troje" btn-checkbox>Troje</button>
-                        <button type="button" class="btn btn-primary" ng-model="checkModel.bfey" btn-checkbox>Brett</button>
-                        <button type="button" class="btn btn-primary" ng-model="checkModel.richbl" btn-checkbox>Rich</button>
-                     </div>
-
-                  </div>
-
-                  <div ng-controller="DatepickerDemoCtrl">
-                     <br>
-                     <label>Date Range:</label>
-                     <br>
-
-                     <div class="row">
-                        <div class="form-group">
-
-                           <div class="col-xs-6">
-                              <input type="date" class="form-control" datepicker-popup ng-model="dtStart" is-open="status.dtStart" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
-                           </div>
-
-                           <div class="col-xs-6">
-                              <input type="date" class="form-control" datepicker-popup ng-model="dtEnd" is-open="status.dtEnd" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
-                           </div>
-
-                        </div>
-                     </div>
-
-                  </div>
-
-                  <div>
-                     <br>
-                     <label>Include Tasks In Progress?</label>
-                     <br>
-
-                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" ng-model="dlgModel.radio" btn-radio=1>Yes</button>
-                        <button type="button" class="btn btn-primary" ng-model="dlgModel.radio" btn-radio=0>No</button>
-                     </div>
-
-                  </div>
-
-               </div>
-
-               <br>
-
-               <div class="modal-footer">
-
-                  <div style="float:left;color:#737373;font-style:italic;line-height: 34px;">
-                     v0.6.0
-                  </div>
-
-                  <button class="btn btn-warning" type="button" ng-click="reset()">Reset</button>
-                  <button class="btn btn-primary" ng-disabled="validateDlg()" type="button" ng-click="ok()">OK</button>
-
-               </div>
             </div>
 
-         </script>
+            <br>
 
+            <div class="row">
+
+              <div class="form-group">
+
+                <div class="col-xs-6">
+                  <label>Username:</label>
+                  <input ng-model="dlgModel.username" class="form-control" type="text" autofocus />
+                </div>
+
+                <div class="col-xs-6">
+                  <label>Password:</label>
+                  <input ng-model="dlgModel.password" class="form-control" type="password" />
+                </div>
+              </div>
+
+            </div>
+
+            <br>
+
+            <div>
+              <label>Project Members:</label>
+              <br>
+
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" ng-model="checkModel.duane" btn-checkbox>Duane</button>
+                <button type="button" class="btn btn-primary" ng-model="checkModel.troje" btn-checkbox>Troje</button>
+                <button type="button" class="btn btn-primary" ng-model="checkModel.bfey" btn-checkbox>Brett</button>
+                <button type="button" class="btn btn-primary" ng-model="checkModel.richbl" btn-checkbox>Rich</button>
+              </div>
+
+            </div>
+
+            <div ng-controller="DatepickerCtrl">
+              <br>
+              <label>Date Range:</label>
+              <br>
+
+              <div class="row">
+                <div class="form-group">
+
+                  <div class="col-xs-6">
+                    <input type="date" class="form-control" datepicker-popup ng-model="dtStart" is-open="status.dtStart" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                  </div>
+
+                  <div class="col-xs-6">
+                    <input type="date" class="form-control" datepicker-popup ng-model="dtEnd" is-open="status.dtEnd" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div>
+              <br>
+              <label>Include Tasks In Progress?</label>
+              <br>
+
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" ng-model="dlgModel.radio" btn-radio=1>Yes</button>
+                <button type="button" class="btn btn-primary" ng-model="dlgModel.radio" btn-radio=0>No</button>
+              </div>
+
+            </div>
+
+          </div>
+
+          <br>
+
+          <div class="modal-footer">
+
+            <div style="float:left;color:#737373;font-style:italic;line-height: 34px;">
+              v0.7.0
+            </div>
+
+            <button class="btn btn-warning" type="button" ng-click="reset()">Reset</button>
+            <button class="btn btn-primary" ng-disabled="validateDlg()" type="button" ng-click="ok()">OK</button>
+
+          </div>
+        </div>
+
+      </script>
+
+    </div>
+
+    <div id="container" style="width: 90%; height: 100%; margin: 0 auto">
+      <div id="alerts">
       </div>
+    </div>
 
-      <div id="container" style="width: 90%; height: 100%; margin: 0 auto">
-         <div id="alerts">
-         </div>
-      </div>
-
-   </body>
+  </body>
 
 </html>
