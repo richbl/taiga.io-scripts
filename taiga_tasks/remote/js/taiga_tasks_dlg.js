@@ -157,7 +157,6 @@ app.controller('ModalCtrl', function($scope, $modal, $log, sharedProperties) {
     //
     getAuthToken({
       website: 'http://public.businesslearninginc.com', // the taiga website to gather tasks
-      project: 'admin-certain-hub-improvements', // the taiga project slug (not project name)
       authToken: '', // session authentication token (derived)
       projectID: '', // project ID (derived)
       projectName: $scope.dlgModel.projectname, // project name
