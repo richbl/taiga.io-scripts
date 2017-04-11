@@ -1,4 +1,4 @@
-#Taiga.io-Scripts
+# Taiga.io-Scripts
 These scripts manage an Agile project management platform currently under development called [Taiga](http://taiga.io "Taiga project management platform"). 
 Though in beta, this web-based platform is extremely stable and the RESTful API is thorough and responsive.
 
@@ -22,8 +22,8 @@ The [bash](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) scripts in **Tai
 
 For more details about using a bash template, [check out the BaT prooject here](https://github.com/richbl/a-bash-template).
 
-##Taiga Importers
-###Importing User Stories into a Taiga Project
+## Taiga Importers
+### Importing User Stories into a Taiga Project
 Called `taiga_import_story.sh`, it does what it sounds like: imports a user story into a Taiga project. Actually, the real value of this script is that it can perform a bulk import of many stories from a tab-delimited file provided as input to the script.
 
 This script creates a new story, populating the following fields:
@@ -35,13 +35,13 @@ This script creates a new story, populating the following fields:
 
 > **NOTE:** For technical details about creating a new story in Taiga, see the [Taiga REST API](https://taigaio.github.io/taiga-doc/dist/api.html#user-stories-create).
 
-###User Story File Format
+### User Story File Format
 The file format used to define individual user stories is a simple **tab-delimited** structure:
 
 	Column 1	Column 2	Column 3	Column 4	Column 5
 	Subject	    Description	[Tag 1]	    [Tag 2]	    [Tag 3]
 
-###Basic Usage
+### Basic Usage
 `taiga_import_story.sh` is run through a command line interface, so all of the command options are made available there.
 
 Here's a successful import of a user story into a Taiga project that uses a project slug named called "a-test-project-import":
@@ -68,15 +68,15 @@ Here's a successful import of a user story into a Taiga project that uses a proj
 	Success: user story #680679 imported.
 
 
-##Taiga Exporters
-###Export a Taiga Project into a JSON File
+## Taiga Exporters
+### Export a Taiga Project into a JSON File
 `taiga_export_project.sh` takes a number of command-line parameters, mostly identifying the Taiga project from which to export, and exports the JSON file to a date-and-time-stamped file (particularly useful for a running backup archive).
 
 >**NOTE:** For technical details defining the JSON structure of a Taiga project, see the [Taiga REST API](https://taigaio.github.io/taiga-doc/dist/api.html#export-import-export-dump).
 
 Related to this script, `run_taiga_export_project.sh` is the front-end script that calls into `taiga_export_project.sh` with a predefined set of parameters. This script is used to automate a regular Taiga project backup strategy through the use of Unix-like tools such as *crontab*.
 
-###Basic Usage
+### Basic Usage
 `taiga_export_project.sh` is run through a command line interface, so all of the command options are made available there.
 
 Here's a successful export of a Taiga project that uses a project slug named called "a-test-project-import":
@@ -102,7 +102,7 @@ Here's a successful export of a Taiga project that uses a project slug named cal
 
 >**NOTE**: The Taiga REST API only permits the export of a Taiga project using JSON if the Taiga server is configured to return a HTTP status code of 200. If the server returns 202, a valid export file is not available, and `taiga_export_project.sh` will quit indicating the reason for failure. For technical details, see the [Taiga REST API as it relates to project export](https://taigaio.github.io/taiga-doc/dist/api.html#export-import-export-dump). 
 
-##Taiga Task Activity Reporting
+## Taiga Task Activity Reporting
 These scripts are used to query into an existing Taiga project, parse user stories by user, perform some calculations against these user stories, and ultimately display the results graphically using [Highcharts](http://www.highcharts.com/ "Highcharts").
 
 ![Taiga Tasks Dialog](https://cloud.githubusercontent.com/assets/10182110/17636695/b8276304-6093-11e6-9402-58f8a52308cd.png "Taiga Tasks Dialog")
@@ -127,8 +127,8 @@ These scripts are provided in both bash and JavaScript, and are intended to be r
 
 The scripts contained in the bash and the local folders are useful for running these applications from a local machine, while the scripts in the remote folder are intended to be installed and run from a remote web-server.
 
-##Requirements
-###Bash Scripts
+## Requirements
+### Bash Scripts
 
  - A preexisting Taiga project
  - An operational [bash](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) environment (bash 4.3.2 used during development)
@@ -137,7 +137,7 @@ The scripts contained in the bash and the local folders are useful for running t
 
 While this package was written and tested under Linux (Ubuntu 15.10), there should be no reason why this won't work under other Unix-like operating systems.
 
-###JavaScript Scripts
+### JavaScript Scripts
 The JavaScript version of the taiga_tasks solution expects JavaScript to be running in the browser. All other requirements are managed remotely through a set of external JavaScript libraries.
 
 ## License
