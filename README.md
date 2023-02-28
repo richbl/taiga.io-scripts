@@ -8,19 +8,19 @@ These scripts are organized into three categories:
 - **Taiga Exporters**: export the JSON file that defines an existing Taiga project (useful for backing a project)
 - **Taiga Task Activity Reporting**: generate a custom visual report on Taiga tasks on a per-user basis. Several variants of this script are available, including a Javascript solution that does not use bash.
 
-## [<img src="https://cloud.githubusercontent.com/assets/10182110/18208786/ae5d76b2-70e5-11e6-9663-cfe47d13f4d9.png" width="150" />](https://github.com/richbl/a-bash-template)Developed with a Bash Template (BaT)
+## [Developed with a Bash Template (BaT)](https://github.com/richbl/a-bash-template)[<img src="https://user-images.githubusercontent.com/10182110/145758715-b127adfc-710b-49d3-9ede-151adc83ae76.png" width="150" />](https://github.com/richbl/a-bash-template)
 
 The [bash](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) scripts in **Taiga.io-Scripts** use a bash template (BaT) called **[A-Bash-Template](https://github.com/richbl/a-bash-template)** designed to make script development and command line argument management more robust, easier to implement, and easier to maintain. Here are a few of those features:
 
-- Dependencies checker: a routine that checks all external program dependencies (*e.g.*, [sshpass](http://linux.die.net/man/1/sshpass) and [jq](https://stedolan.github.io/jq/))
+- Dependencies checker: a routine that checks all external program dependencies (*e.g.*, [jq](https://stedolan.github.io/jq/))
 - Arguments and script details--such as script description and syntax--are stored in the [JSON](http://www.json.org/) file format (*i.e.*, `config.json`)
 - JSON queries (using [jq](https://stedolan.github.io/jq/)) handled through wrapper functions
 - A script banner function automates banner generation, reading directly from `config.json`
-- Command line arguments are parsed and tested for completeness using both short and long-format argument syntax (*e.g.*, `-u|--username`)
+- Command line arguments are parsed and tested for completeness using both short and long-format argument syntax (*e.g.*, `-f|--font`)
 - Optional command line arguments are permissible and managed through the JSON configuration file
-- Template functions organized into libraries to minimize code footprint in the main script
+- Template functions organized into libraries (see the [Bash-Lib](https://github.com/richbl/bash-lib) project for details) to minimize code footprint in the main script
 
-For more details about using a bash template, [check out the BaT prooject here](https://github.com/richbl/a-bash-template).
+For more details about using a bash template, [check out the BaT sources here](https://github.com/richbl/a-bash-template).
 
 ## Taiga Importers
 ### Importing User Stories into a Taiga Project
@@ -105,9 +105,9 @@ Here's a successful export of a Taiga project that uses a project slug named cal
 ## Taiga Task Activity Reporting
 These scripts are used to query into an existing Taiga project, parse user stories by user, perform some calculations against these user stories, and ultimately display the results graphically using [Highcharts](http://www.highcharts.com/ "Highcharts").
 
-![Taiga Tasks Dialog](https://cloud.githubusercontent.com/assets/10182110/17636695/b8276304-6093-11e6-9402-58f8a52308cd.png "Taiga Tasks Dialog")
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://cloud.githubusercontent.com/assets/10182110/17636695/b8276304-6093-11e6-9402-58f8a52308cd.png"><source media="(prefers-color-scheme: light)" srcset="https://cloud.githubusercontent.com/assets/10182110/17636695/b8276304-6093-11e6-9402-58f8a52308cd.png"><img src="https://cloud.githubusercontent.com/assets/10182110/17636695/b8276304-6093-11e6-9402-58f8a52308cd.png"></picture>
 
-![Taiga Activity Report](https://raw.githubusercontent.com/richbl/taiga.io-scripts/master/taiga_tasks_activity_report.png "Taiga Activity Report")
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/richbl/taiga.io-scripts/master/taiga_tasks_activity_report.png"><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/richbl/taiga.io-scripts/master/taiga_tasks_activity_report.png"><img src="https://raw.githubusercontent.com/richbl/taiga.io-scripts/master/taiga_tasks_activity_report.png"></picture>
 
 These scripts are provided in both bash and JavaScript, and are intended to be run either locally or from a remote server. The organization of the repository should provide some understanding of which scripts are which:
 
