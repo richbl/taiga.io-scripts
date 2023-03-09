@@ -1,3 +1,5 @@
+> **DATED PROJECT**: note that this project is out of date (created in 2015), and new Taiga API calls will likely break this script. The most current Taiga.io API is now located here: https://docs.taiga.io/#api. If you'd like to push new functionality (or update existing functionality) to this script, please feel free to work with me on pull requests as needed. Thanks!
+
 # Taiga.io-Scripts
 These scripts manage an Agile project management platform currently under development called [Taiga](http://taiga.io "Taiga project management platform"). 
 Though in beta, this web-based platform is extremely stable and the RESTful API is thorough and responsive.
