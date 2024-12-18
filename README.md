@@ -10,7 +10,7 @@ These scripts are organized into three categories:
 - **Taiga Exporters**: export the JSON file that defines an existing Taiga project (useful for backing a project)
 - **Taiga Task Activity Reporting**: generate a custom visual report on Taiga tasks on a per-user basis. Several variants of this script are available, including a Javascript solution that does not use bash.
 
-## [Developed with a Bash Template (BaT)](https://github.com/richbl/a-bash-template)[<img src="https://user-images.githubusercontent.com/10182110/145758715-b127adfc-710b-49d3-9ede-151adc83ae76.png" width="150" />](https://github.com/richbl/a-bash-template)
+## [<img src="https://github.com/user-attachments/assets/4dc1e16e-3fd3-481c-9a43-b027c029dd27" width="150" />](https://github.com/richbl/a-bash-template)[Developed with a Bash Template (BaT)](https://github.com/richbl/a-bash-template)
 
 The [bash](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29) scripts in **Taiga.io-Scripts** use a bash template (BaT) called **[A-Bash-Template](https://github.com/richbl/a-bash-template)** designed to make script development and command line argument management more robust, easier to implement, and easier to maintain. Here are a few of those features:
 
